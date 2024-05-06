@@ -1,11 +1,13 @@
 import React from "react";
 import Layout from "antd/es/layout/layout";
 import { CreateTodo } from "../types/types";
-import { useCreateTodoMutation } from "../services/TodoServices";
+
 import FormToAdd from "../components/FormToAdd";
+import { useTodoStore } from "../services/store";
 
 const MainForm = () => {
-  const [createTodo] = useCreateTodoMutation();
+  const createTodo = useTodoStore((state) => state.createTodos);
+
   const onFinish = React.useCallback(
     (values: CreateTodo) => {
       //@ts-ignore

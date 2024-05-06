@@ -1,8 +1,8 @@
 import { Modal } from "antd";
 import React from "react";
 import FormToAdd from "./FormToAdd";
-import { useUpdateTodoMutation } from "../services/TodoServices";
-import { CreateTodo, TodoTask } from "../types/types";
+import { TodoTask } from "../types/types";
+import { useTodoStore } from "../services/store";
 
 type Props = {
   isModalOpen: boolean;
@@ -13,13 +13,15 @@ type Props = {
 
 const ModalUpdate = (props: Props) => {
   const { isModalOpen, setIsModalOpen, initialValue, setInitialValue } = props;
-  const [updateTodo] = useUpdateTodoMutation();
+
   const handleCloseModal = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     setInitialValue(undefined);
     setIsModalOpen(false);
   };
+
+  const updateTodo = useTodoStore((state) => state.updateTodos);
 
   const onFinish = React.useCallback(
     (values: any) => {
@@ -32,7 +34,7 @@ const ModalUpdate = (props: Props) => {
       setInitialValue(undefined);
       setIsModalOpen(false);
     },
-    [updateTodo, initialValue?.id]
+    [initialValue?.id]
   );
 
   return (

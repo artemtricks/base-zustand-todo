@@ -1,10 +1,7 @@
 import { Button, List, Checkbox } from "antd";
 import React from "react";
 import { TodoTask } from "../types/types";
-import {
-  useDeleteTodoMutation,
-  useGetTodoQuery,
-} from "../services/TodoServices";
+import { useTodoStore } from "../services/store";
 import ModalUpdate from "./ModalUpdate";
 
 const Tasks = () => {
@@ -40,10 +37,18 @@ const Tasks = () => {
   // const { tasks } = props;
   // const todosItems = !!items && items.length > 0 ? items : [];
 
-  const { isLoading, data } = useGetTodoQuery(null);
-  const [deleteTodo] = useDeleteTodoMutation();
+  // const { isLoading, data } = useGetTodoQuery(null);
+  // const [deleteTodo] = useDeleteTodoMutation();
 
-  const todosItems: TodoTask[] | [] = !!data && data.length > 0 ? data : [];
+  // const todosItems: TodoTask[] | [] = !!data && data.length > 0 ? data : [];
+
+  const { fetchTodos, isLoading, deleteTodos, todo } = useTodoStore(
+    (state) => state
+  );
+  React.useEffect(() => {
+    fetchTodos();
+  }, []);
+
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [initialValue, setInitialValue] = React.useState<undefined | TodoTask>(
     undefined
@@ -55,11 +60,11 @@ const Tasks = () => {
     <>
       <List
         itemLayout="horizontal"
-        dataSource={todosItems}
+        dataSource={todo}
         loading={isLoading}
         renderItem={(item) => (
           <List.Item key={item.id}>
-            <Checkbox style={{ marginRight: 10 }} />
+            <Checkbox style={{ marginRight: 10 }} checked={item?.complited} />
             <List.Item.Meta title={item.title} description={item.description} />
             <Button
               style={{ marginRight: 10 }}
@@ -69,7 +74,7 @@ const Tasks = () => {
             >
               Редактировать
             </Button>
-            <Button onClick={() => deleteTodo(item.id)}>Удалить</Button>
+            <Button onClick={() => deleteTodos(item.id)}>Удалить</Button>
           </List.Item>
         )}
       />
